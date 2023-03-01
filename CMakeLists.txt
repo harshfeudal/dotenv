@@ -20,6 +20,7 @@ project(Dotenv VERSION 1.0.0 DESCRIPTION "A simple C++ dotenv file reader for re
 aux_source_directory(test mainsrc)
 
 add_executable(${PROJECT_NAME} ${mainsrc})
+target_include_directories(${PROJECT_NAME} PRIVATE "include")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17
