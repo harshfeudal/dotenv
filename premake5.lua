@@ -13,7 +13,7 @@ project "Dotenv"
 	targetdir ("%{wks.location}/x64/%{cfg.buildcfg}")
 	objdir    ("%{wks.location}/x64/%{cfg.buildcfg}")
 
-	includedirs{ "dotenv" }
+	includedirs{ "$(SolutionDir)" }
 	files      { 
 		"dotenv/**.cpp",
 		"dotenv/**.h",

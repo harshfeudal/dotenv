@@ -17,7 +17,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(Dotenv VERSION 1.0.0 DESCRIPTION "A simple C++ dotenv file reader for reading .env file in simplest way")
 
-aux_source_directory(src mainsrc)
+aux_source_directory(test mainsrc)
 
 add_executable(${PROJECT_NAME} ${mainsrc})
 
