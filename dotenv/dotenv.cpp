@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <cctype>
 
-// Trim leading and trailing whitespace
+ // Trim leading and trailing whitespace
 std::string Trim(const std::string& str) {
 	auto first = str.find_first_not_of(" \t\n\r");
 	auto last = str.find_last_not_of(" \t\n\r");
@@ -29,6 +29,41 @@ std::string Trim(const std::string& str) {
 		return "";
 	}
 	return str.substr(first, last - first + 1);
+}
+
+// Check if a string is enclosed in double quotes
+bool IsQuoted(const std::string & str) {
+	return str.size() >= 2 && str.front() == '"' && str.back() == '"';
+}
+
+// Remove the enclosing double quotes from a string
+std::string RemoveQuotes(const std::string & str) {
+	if (IsQuoted(str)) {
+		std::string result;
+		bool escape = false;
+		for (char c : str.substr(1, str.size() - 2)) {
+			if (escape) {
+				if (c == 'n') {
+					result += '\n';
+				}
+				else if (c == 't') {
+					result += '\t';
+				}
+				else {
+					result += c;
+				}
+				escape = false;
+			}
+			else if (c == '\\') {
+				escape = true;
+			}
+			else {
+				result += c;
+			}
+		}
+		return result;
+	}
+	return str;
 }
 
 Dotenv::Dotenv(const std::string & filename) {
@@ -53,6 +88,9 @@ Dotenv::Dotenv(const std::string & filename) {
 		// Extract the key-value pair
 		auto key = Trim(line.substr(0, pos));
 		auto value = Trim(line.substr(pos + 1));
+
+		// Remove quotes if present
+		value = RemoveQuotes(value);
 
 		// Store the key-value pair
 		data_[key] = value;

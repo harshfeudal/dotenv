@@ -13,6 +13,8 @@ int main()
 	std::cout << "Read base64: " << config.Get("READ_BASE64") << std::endl;
 	std::cout << "Read symbol: " << config.Get("READ_SYMBOL") << std::endl;
 	std::cout << "Harshfeudal: " << config.Get("HARSHFEUDAL") << std::endl;
+	std::cout << "String: " << config.Get("STRING") << std::endl;
+	std::cout << "Quote: " << config.Get("QUOTE") << std::endl;
 
 	return 0;
 }
