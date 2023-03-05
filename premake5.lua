@@ -14,11 +14,9 @@ project "Dotenv"
 	objdir    ("%{wks.location}/x64/%{cfg.buildcfg}")
 
 	includedirs{ "$(SolutionDir)include" }
-	files      { 
-		"dotenv/**.cpp",
+	files { 
 		"dotenv/**.h",
-		"test/**.cpp",
-		"test/**.h"
+		"test/**.cpp"
 	}
 
 	filter { "system:windows", "toolset:msc" }

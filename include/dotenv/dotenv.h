@@ -16,15 +16,48 @@
 
 #pragma once
 
+#ifdef _MSC_VER
+	#define _CRT_SECURE_NO_WARNINGS
+#endif
+
+#include <cstdlib>
+#include <fstream>
+#include <regex>
 #include <string>
 #include <unordered_map>
 
-class Dotenv {
-public:
-	Dotenv(const std::string& filename);
-	std::string Get(const std::string& key) const;
-	bool Has(const std::string& key) const;
+namespace dotenv {
+	// Parse .env file contents into a map
+	std::unordered_map<std::string, std::string> parse(const std::string& src) {
+		std::unordered_map<std::string, std::string> map;
+		std::regex line_regex(R"((?:^|\n)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|\n))");
 
-private:
-	std::unordered_map<std::string, std::string> data_;
-};
+		auto line_begin = std::sregex_iterator(src.begin(), src.end(), line_regex);
+		auto line_end = std::sregex_iterator();
+		for (std::sregex_iterator i = line_begin; i != line_end; ++i) {
+			std::smatch match = *i;
+			std::string key = match[1];
+			std::string value = match[2];
+			if (!value.empty()) {
+				if (value[0] == '\'' || value[0] == '"' || value[0] == '`') {
+					value = value.substr(1, value.size() - 2);
+				}
+				map[key] = value;
+			}
+		}
+
+		return map;
+	}
+
+	// Load .env file and populate environment variables
+	void load(const std::string& path) {
+		std::ifstream file(path);
+		if (file.is_open()) {
+			std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+			std::unordered_map<std::string, std::string> map = parse(contents);
+			for (const auto& pair : map) {
+				_putenv((pair.first + "=" + pair.second).c_str());
+			}
+		}
+	}
+}

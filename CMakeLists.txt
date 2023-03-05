@@ -17,12 +17,16 @@
 cmake_minimum_required(VERSION 3.15)
 project(Dotenv VERSION 1.0.0 DESCRIPTION "A simple C++ dotenv file reader for reading .env file in simplest way")
 
-aux_source_directory(test mainsrc)
+# Define an INTERFACE library for the header-only library
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(${PROJECT_NAME} ${mainsrc})
-target_include_directories(${PROJECT_NAME} PRIVATE "include")
-
+# Set properties for the target
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
+
+# Add test executable target and link against the header-only library
+add_executable(test_dotenv test/test.cpp)
+target_link_libraries(test_dotenv PRIVATE ${PROJECT_NAME})
