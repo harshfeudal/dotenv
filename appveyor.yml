@@ -23,9 +23,3 @@ build_script:
       cmake -G %GENERATOR% ..
       
       cmake --build . --config %BUILD_TYPE%
-
-before_test:
-  - set PATH=%PATH%;C:\projects\dotenv\build\_deps\catch2-build\src\%BUILD_TYPE%;C:\projects\dotenv\build\%BUILD_TYPE%
-  
-test_script:
-  - C:\projects\dotenv\build\tests\%BUILD_TYPE%\test_dotenv.exe
