@@ -3,7 +3,7 @@
 
 int main() {
 	dotenv::load("./test/.env");
-	const char* my_var = std::getenv("MY_HARSHFEUDAL");
+	const char* my_var = std::getenv("MY_LONG");
 	if (my_var) {
 		std::cout << "MY_RESULT=" << my_var << std::endl;
 	}
