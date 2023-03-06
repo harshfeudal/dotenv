@@ -28,27 +28,47 @@
 #include <unordered_map>
 
 namespace dotenv {
-	// Parse .env file contents into a map
-	std::unordered_map<std::string, std::string> parse(const std::string& src) {
-		std::unordered_map<std::string, std::string> map;
-		std::regex line_regex(R"((?:^|\n)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|\n))");
+    // Parse .env file contents into a map
+    std::unordered_map<std::string, std::string> parse(const std::string& src) {
+        std::unordered_map<std::string, std::string> map;
+        std::regex line_regex(R"((?:^|\n)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\.|[^"\\])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|\n))");
 
-		auto line_begin = std::sregex_iterator(src.begin(), src.end(), line_regex);
-		auto line_end = std::sregex_iterator();
-		for (std::sregex_iterator i = line_begin; i != line_end; ++i) {
-			std::smatch match = *i;
-			std::string key = match[1];
-			std::string value = match[2];
-			if (!value.empty()) {
-				if (value[0] == '\'' || value[0] == '"' || value[0] == '`') {
-					value = value.substr(1, value.size() - 2);
-				}
-				map[key] = value;
-			}
-		}
+        auto line_begin = std::sregex_iterator(src.begin(), src.end(), line_regex);
+        auto line_end = std::sregex_iterator();
+        for (std::sregex_iterator i = line_begin; i != line_end; ++i) {
+            std::smatch match = *i;
+            std::string key = match[1];
+            std::string value = match[2];
+            if (!value.empty()) {
+                if (value[0] == '\'' || value[0] == '"' || value[0] == '`') {
+                    value = value.substr(1, value.size() - 2);
+                    // Handle escaped characters
+                    size_t pos = 0;
+                    while ((pos = value.find("\\", pos)) != std::string::npos) {
+                        if (pos + 1 < value.size()) {
+                            char c = value[pos + 1];
+                            if (c == '"' || c == '\'' || c == '\\') {
+                                value.erase(pos, 1);
+                            }
+                            else if (c == 'n') {
+                                value.replace(pos, 2, "\n");
+                            }
+                            else if (c == 'r') {
+                                value.replace(pos, 2, "\r");
+                            }
+                            else if (c == 't') {
+                                value.replace(pos, 2, "\t");
+                            }
+                        }
+                        ++pos;
+                    }
+                }
+                map[key] = value;
+            }
+        }
 
-		return map;
-	}
+        return map;
+    }
 
 	// Load .env file and populate environment variables
 	void load(const std::string& path) {
