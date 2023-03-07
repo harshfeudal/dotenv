@@ -411,9 +411,8 @@ x64/
 *.vcxproj.filters
 *.vcxproj.user
 
-# Others
+# Other file/folder
 *.exe
 lib/**.cmake
 .vscode/
 build
-Footer
