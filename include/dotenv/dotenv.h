@@ -17,9 +17,7 @@
 #pragma once
 
 // MSVC warning disabled
-#ifdef _MSC_VER
-	#define _CRT_SECURE_NO_WARNINGS
-#endif
+#define _CRT_SECURE_NO_WARNINGS 1
 
 #include <cstdlib>
 #include <fstream>

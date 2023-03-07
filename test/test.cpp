@@ -106,5 +106,18 @@ int main() {
 	}
 	std::cout << std::endl;
 
+	std::cout << "Spacing test: " << std::endl;
+	{
+		Timer timer;
+		const char* my_var = std::getenv("MY_SPACING");
+		if (my_var) {
+			std::cout << "MY_RESULT=" << my_var << std::endl;
+		}
+		else {
+			std::cerr << "MY_RESULT not found in environment" << std::endl;
+		}
+	}
+	std::cout << std::endl;
+
 	return 0;
 }
