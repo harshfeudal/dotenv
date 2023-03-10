@@ -65,18 +65,83 @@ namespace dotenv {
             }
         }
 
+        // Substitute environment variables
+        for (auto& pair : map) {
+            std::string value = pair.second;
+            if (value.empty()) {
+                // If the value is an empty string, unset the environment variable
+                std::string key = pair.first;
+                _putenv((key + "=").c_str());
+            }
+            else {
+                size_t pos = 0;
+                while ((pos = value.find("$", pos)) != std::string::npos) {
+                    if (pos + 1 < value.size()) {
+                        if (value[pos + 1] == '$') {
+                            // Handle escaped $
+                            value.erase(pos, 1);
+                            ++pos;
+                        }
+                        else if (value[pos + 1] == '{') {
+                            // Substitution with curly braces
+                            size_t end = value.find("}", pos + 2);
+                            if (end != std::string::npos) {
+                                std::string key = value.substr(pos + 2, end - pos - 2);
+                                auto it = map.find(key);
+                                if (it != map.end()) {
+                                    value.replace(pos, end - pos + 1, it->second);
+                                    pos += it->second.size();
+                                }
+                                else {
+                                    pos = end + 1;
+                                }
+                            }
+                            else {
+                                pos += 2;
+                            }
+                        }
+                        else {
+                            // Substitution without curly braces
+                            size_t end = pos + 1;
+                            while (end < value.size() && std::isalnum(value[end])) {
+                                ++end;
+                            }
+                            std::string key = value.substr(pos + 1, end - pos - 1);
+                            auto it = map.find(key);
+                            if (it != map.end()) {
+                                value.replace(pos, end - pos, it->second);
+                                pos += it->second.size();
+                            }
+                            else {
+                                pos = end;
+                            }
+                        }
+                    }
+                    else {
+                        ++pos;
+                    }
+                }
+                pair.second = value;
+
+                // Set the environment variable
+                std::string key = pair.first;
+                std::string env_string = key + "=" + pair.second;
+                _putenv(env_string.c_str());
+            }
+        }
+
         return map;
     }
 
-	// Load .env file and populate environment variables
-	void load(const std::string& path) {
-		std::ifstream file(path);
-		if (file.is_open()) {
-			std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-			std::unordered_map<std::string, std::string> map = parse(contents);
-			for (const auto& pair : map) {
-				_putenv((pair.first + "=" + pair.second).c_str());
-			}
-		}
-	}
+    // Load .env file and populate environment variables
+    void load(const std::string & path) {
+        std::ifstream file(path);
+        if (file.is_open()) {
+            std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            std::unordered_map<std::string, std::string> map = parse(contents);
+            for (const auto& pair : map) {
+                _putenv((pair.first + "=" + pair.second).c_str());
+            }
+        }
+    }
 }
