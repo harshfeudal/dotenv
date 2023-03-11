@@ -23,6 +23,7 @@
 #include <fstream>
 #include <regex>
 #include <string>
+#include <iostream>
 #include <unordered_map>
 
 namespace dotenv {
@@ -63,20 +64,124 @@ namespace dotenv {
                 }
                 map[key] = value;
             }
+            else {
+                // If the value is an empty string, check if the variable already exists
+                char* env_value = std::getenv(key.c_str());
+                if (env_value == nullptr) {
+                    // If the variable does not exist, unset it
+                    _putenv((key + "=").c_str());
+                }
+                else {
+                    // If the variable exists, set it with an empty string value
+                    _putenv((key + "=" + value).c_str());
+                }
+            }
         }
 
+        // Substitute environment variables
+        for (auto& pair : map) {
+            std::string value = pair.second;
+            size_t pos = 0;
+
+            while ((pos = value.find("$", pos)) != std::string::npos) {
+                if (pos + 1 < value.size()) {
+                    if (value[pos + 1] == '$') {
+                        // Handle escaped $
+                        value.erase(pos, 1);
+                        ++pos;
+                    }
+                    else if (value[pos + 1] == '{') {
+                        // Substitution with curly braces
+                        size_t end = value.find("}", pos + 2);
+                        if (end != std::string::npos) {
+                            std::string key_with_default = value.substr(pos + 2, end - pos - 2);
+                            size_t colon_pos = key_with_default.find(":");
+                            std::string key, default_value;
+
+                            if (colon_pos == std::string::npos) {
+                                // No default value provided
+                                key = key_with_default;
+                                if (map.find(key) != map.end()) {
+                                    // Key found in map, substitute with value
+                                    value.replace(pos, end - pos + 1, map[key]);
+                                    pos += map[key].size();
+                                }
+                                else {
+                                    // Key not found in map, remove substitution
+                                    value.erase(pos, end - pos + 1);
+                                }
+                            }
+                            else {
+                                // Default value provided
+                                key = key_with_default.substr(0, colon_pos);
+                                std::string default_value = key_with_default.substr(colon_pos + 1);
+                                if (map.find(key) != map.end()) {
+                                    // Key found in map, substitute with value
+                                    value.replace(pos, end - pos + 1, map[key]);
+                                    pos += map[key].size();
+                                }
+                                else {
+                                    // Key not found in map, substitute with default value
+                                    value.replace(pos, end - pos + 1, default_value);
+                                    pos += default_value.size();
+                                }
+                            }
+                        }
+                        else {
+                            // No matching } found, remove substitution
+                            value.erase(pos, 2);
+                        }
+                    }
+                    else {
+                        // Substitution without curly braces
+                        std::string key = value.substr(pos + 1, 1);
+                        if (map.find(key) != map.end()) {
+                            // Key found in map, substitute with value
+                            value.replace(pos, 2, map[key]);
+                            pos += map[key].size();
+                        }
+                        else {
+                            // Key not found in map, remove substitution
+                            value.erase(pos, 2);
+                        }
+                    }
+                }
+                else {
+                    // $ is at end of string, remove substitution
+                    value.erase(pos, 1);
+                }
+            }
+            pair.second = value;
+        }
         return map;
     }
 
-	// Load .env file and populate environment variables
-	void load(const std::string& path) {
-		std::ifstream file(path);
-		if (file.is_open()) {
-			std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-			std::unordered_map<std::string, std::string> map = parse(contents);
-			for (const auto& pair : map) {
-				_putenv((pair.first + "=" + pair.second).c_str());
-			}
-		}
-	}
+    // Load .env file and populate environment variables
+    void load(const std::string& path) {
+        std::ifstream file(path);
+        if (file.is_open()) {
+            std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            std::unordered_map<std::string, std::string> map = parse(contents);
+            for (const auto& pair : map) {
+                std::string key = pair.first;
+                std::string value = pair.second;
+                if (value.empty()) {
+                    // If the value is an empty string, set it to the default value if available
+                    size_t colon_pos = key.find(":");
+                    std::string env_key, default_value;
+                    if (colon_pos != std::string::npos) {
+                        env_key = key.substr(0, colon_pos);
+                        default_value = key.substr(colon_pos + 1);
+                    }
+                    else {
+                        env_key = key;
+                    }
+                    if (!default_value.empty()) {
+                        value = default_value;
+                    }
+                }
+                _putenv((key + "=" + value).c_str());
+            }
+        }
+    }
 }
