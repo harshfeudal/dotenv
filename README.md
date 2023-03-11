@@ -73,6 +73,23 @@ With this library features, your comment will be ignored after the `#` mark! Com
 
 3. This library just include __only a header file (`dotenv.h`)__!
 
+4. Very similar with what Javascript does; The expansion engine roughly has the following rules:
+
+    - `$KEY` will expand any env with the name `KEY`
+    - `${KEY}` will expand any env with the name `KEY`
+    - `\$KEY` will escape the $KEY rather than expand
+    - `${KEY:-default}` will first attempt to expand any env with the name KEY. If not one, then it will return default
+
+5. If you decide to make an empty variable like this:
+```env
+EMPTY=
+```
+
+... so remember to have a space like this:
+```env
+EMPTY= # A space after the '=' symbol
+```
+
 ### 👷 Support platform
  - Microsoft Windows 10 `x64/x86`
  - Visual Studio platform `x64/x86`
