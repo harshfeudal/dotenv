@@ -15,7 +15,7 @@
 # 
 
 cmake_minimum_required(VERSION 3.15)
-project(Dotenv VERSION 1.2.0 DESCRIPTION "A simple C++ dotenv file reader for reading .env file in simplest way")
+project(Dotenv VERSION 1.2.1 DESCRIPTION "A simple C++ dotenv file reader for reading .env file in simplest way")
 
 # Define an INTERFACE library for the header-only library
 add_library(${PROJECT_NAME} INTERFACE)

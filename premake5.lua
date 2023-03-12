@@ -1,8 +1,10 @@
-workspace "Dotenv"
+-- Visual Studio file generator setup --
+
+workspace "dotenv"
 	architecture "x64"
 	configurations { "Release" }
 
-project "Dotenv"
+project "dotenv"
 	kind          "ConsoleApp"
 	language      "C++"
 	cppdialect    "C++17"
@@ -16,7 +18,8 @@ project "Dotenv"
 	includedirs{ "$(SolutionDir)include" }
 	files { 
 		"dotenv/**.h",
-		"test/**.cpp"
+		"test/**.cpp",
+        "test/**.h"
 	}
 
 	filter { "system:windows", "toolset:msc" }
