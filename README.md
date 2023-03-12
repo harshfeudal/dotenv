@@ -1,6 +1,6 @@
 # Dotenv for C++
 
- <img src="https://user-images.githubusercontent.com/87577447/223471093-0c3dedd0-780d-40d2-a507-1e07df441909.png" alt="dotenv" align="right" width="250" />
+ <img src="https://user-images.githubusercontent.com/87577447/223471093-0c3dedd0-780d-40d2-a507-1e07df441909.png" alt="dotenv" align="right" width="200" />
 
 <div align="center">
 
@@ -9,7 +9,7 @@ This library support to load environment variables from a `.env` file and read t
 [![Build status](https://ci.appveyor.com/api/projects/status/0yh7hmtp0xu98b31?svg=true)](https://ci.appveyor.com/project/harshfeudal/dotenv)
 [![Release](https://img.shields.io/github/v/release/harshfeudal/dotenv?color=brightgreen)](https://github.com/harshfeudal/dotenv/releases/latest)
 [![GitHub issues](https://img.shields.io/github/issues/harshfeudal/dotenv)](https://github.com/harshfeudal/dotenv/issues)
-[![GitHub license](https://img.shields.io/github/license/harshfeudal/dotenv?color=brightgreen)](https://github.com/harshfeudal/dotenv/blob/main/APACHE-LICENSE.md)
+[![GitHub license](https://img.shields.io/github/license/harshfeudal/dotenv?color=brightgreen)](https://github.com/harshfeudal/dotenv/blob/master/MIT_LICENSE.md)
 <br />
 [![Discord](https://img.shields.io/discord/900408551573438584?style=flat&logo=discord)](https://discord.gg/6Faaqhaqjs)
 [![GitHub stars](https://img.shields.io/github/stars/harshfeudal/dotenv?color=ff69b4)](https://github.com/harshfeudal/dotenv/stargazers)
