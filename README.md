@@ -35,14 +35,37 @@ int main() {
 	dotenv::load(".env");
 
     // Read your .env variable
-    const char* my_var = std::getenv("MY_VAR");
+    size_t envValueSize;
+    char* my_var;
+    errno_t error = _dupenv_s(&my_var, &envValueSize, name.c_str());
 
+    // Read it
+    std::cout << "The variable is: " << my_var << std::endl;
+
+    // Remember to free it
+    free(my_var);
+}
+```
+
+* Some notice update: You can also use `std::getenv("YOUR_ENV_VAR")`.
+However, some compiler like MSVC doesn't allow you to use that, and they recommend you to replace as `_dupenv_s`.
+If you are not using MSVC, you can do like below:
+
+```cpp
+#include <dotenv/dotenv.h>
+#include <iostream>
+int main() {
+    // Load your .env file
+	dotenv::load(".env");
+    // Read your .env variable
+    const char* my_var = std::getenv("MY_VAR");
     // Read it!
     std::cout << "The variable is: " << my_var << std::endl;
 }
 ```
 
-Compare it to your `.env` file:
+... and compare it to your `.env` file:
+
 ```env
 MY_VAR="Hello World!"
 ```
