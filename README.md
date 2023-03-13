@@ -37,7 +37,7 @@ int main() {
     // Read your .env variable
     size_t envValueSize;
     char* my_var;
-    errno_t error = _dupenv_s(&my_var, &envValueSize, name.c_str());
+    errno_t error = _dupenv_s(&my_var, &envValueSize, "MY_VAR");
 
     // Read it
     std::cout << "The variable is: " << my_var << std::endl;
@@ -100,8 +100,8 @@ With this library features, your comment will be ignored after the `#` mark! Com
 
     - `$KEY` will expand any env with the name `KEY`
     - `${KEY}` will expand any env with the name `KEY`
-    - `\$KEY` will escape the $KEY rather than expand
-    - `${KEY:-default}` will first attempt to expand any env with the name KEY. If not one, then it will return default
+    - `\$KEY` will escape the `$KEY` rather than expand
+    - `${KEY:-default}` will first attempt to expand any env with the name `KEY`. If not one, then it will return default
 
 5. If you decide to make an empty variable like this:
 ```env
