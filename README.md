@@ -35,9 +35,9 @@ int main() {
 	dotenv::load(".env");
 
     // Read your .env variable
-    size_t envValueSize;
     char* my_var;
-    errno_t error = _dupenv_s(&my_var, &envValueSize, "MY_VAR");
+    size_t envValueSize;
+    _dupenv_s(&my_var, &envValueSize, "MY_VAR");
 
     // Read it
     std::cout << "The variable is: " << my_var << std::endl;
@@ -49,7 +49,7 @@ int main() {
 
 * Some notice update: You can also use `std::getenv("YOUR_ENV_VAR")`.
 However, some compiler like MSVC doesn't allow you to use that, and they recommend you to replace as `_dupenv_s`.
-If you are not using MSVC, you can do like below:
+You can also use other methods if you find a new one! If you are not using MSVC, you can do like below (recommend):
 
 ```cpp
 #include <dotenv/dotenv.h>
@@ -57,20 +57,24 @@ If you are not using MSVC, you can do like below:
 int main() {
     // Load your .env file
 	dotenv::load(".env");
+
     // Read your .env variable
     const char* my_var = std::getenv("MY_VAR");
-    // Read it!
+
+    // Read it
     std::cout << "The variable is: " << my_var << std::endl;
 }
 ```
 
 ... and compare it to your `.env` file:
 
+`.env`
+
 ```env
 MY_VAR="Hello World!"
 ```
 
-Done! Simple right?
+Done! Simple right (I think)?
 
 ### ✨ Library features
 1. Somehow you really want to skip line (or do whatever you want) like this:
