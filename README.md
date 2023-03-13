@@ -35,19 +35,46 @@ int main() {
 	dotenv::load(".env");
 
     // Read your .env variable
+    char* my_var;
+    size_t envValueSize;
+    _dupenv_s(&my_var, &envValueSize, "MY_VAR");
+
+    // Read it
+    std::cout << "The variable is: " << my_var << std::endl;
+
+    // Remember to free it
+    free(my_var);
+}
+```
+
+* Some notice update: You can also use `std::getenv("YOUR_ENV_VAR")`.
+However, some compiler like MSVC doesn't allow you to use that, and they recommend you to replace as `_dupenv_s`.
+You can also use other methods if you find a new one! If you are not using MSVC, you can do like below (recommend):
+
+```cpp
+#include <dotenv/dotenv.h>
+#include <iostream>
+int main() {
+    // Load your .env file
+	dotenv::load(".env");
+
+    // Read your .env variable
     const char* my_var = std::getenv("MY_VAR");
 
-    // Read it!
+    // Read it
     std::cout << "The variable is: " << my_var << std::endl;
 }
 ```
 
-Compare it to your `.env` file:
+... and compare it to your `.env` file:
+
+`.env`
+
 ```env
 MY_VAR="Hello World!"
 ```
 
-Done! Simple right?
+Done! Simple right (I think)?
 
 ### ✨ Library features
 1. Somehow you really want to skip line (or do whatever you want) like this:
@@ -77,8 +104,8 @@ With this library features, your comment will be ignored after the `#` mark! Com
 
     - `$KEY` will expand any env with the name `KEY`
     - `${KEY}` will expand any env with the name `KEY`
-    - `\$KEY` will escape the $KEY rather than expand
-    - `${KEY:-default}` will first attempt to expand any env with the name KEY. If not one, then it will return default
+    - `\$KEY` will escape the `$KEY` rather than expand
+    - `${KEY:-default}` will first attempt to expand any env with the name `KEY`. If not one, then it will return default
 
 5. If you decide to make an empty variable like this:
 ```env
