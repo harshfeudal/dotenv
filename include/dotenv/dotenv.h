@@ -3,12 +3,16 @@
 // MSVC warning disabled
 #define _CRT_SECURE_NO_WARNINGS 1
 
+#pragma warning(push, 0)
+
 #include <cstdlib>
 #include <fstream>
 #include <regex>
 #include <string>
 #include <iostream>
 #include <unordered_map>
+
+#pragma warning(pop)
 
 namespace dotenv {
     // Parse .env file contents into a map
@@ -18,11 +22,11 @@ namespace dotenv {
 
         auto line_begin = std::sregex_iterator(src.begin(), src.end(), line_regex);
         auto line_end   = std::sregex_iterator();
-        
+
         for (std::sregex_iterator i = line_begin; i != line_end; ++i) {
 
             std::smatch match = *i;
-            std::string key   = match[1];
+            std::string key = match[1];
             std::string value = match[2];
 
             if (!value.empty()) {
@@ -34,7 +38,7 @@ namespace dotenv {
                         if (pos + 1 < value.size()) {
                             char c = value[pos + 1];
                             if (c == '"' || c == '\'' || c == '\\' || c == 'a' || c == 'b' || c == 'f' || c == 'n' || c == 'r' || c == 't' || c == 'v' || c == '?' || c == '\'') {
-                                if (c == 'a') { value.replace(pos, 2, "\a"); }
+                                     if (c == 'a')  { value.replace(pos, 2, "\a"); }
                                 else if (c == 'b')  { value.replace(pos, 2, "\b"); }
                                 else if (c == 'f')  { value.replace(pos, 2, "\f"); }
                                 else if (c == 'n')  { value.replace(pos, 2, "\n"); }
@@ -68,7 +72,6 @@ namespace dotenv {
 
             while ((pos = value.find("$", pos)) != std::string::npos) {
                 if (pos + 1 < value.size()) {
-
                     if (value[pos + 1] == '$') {
                         // Handle escaped $
                         value.erase(pos, 1);
@@ -79,7 +82,6 @@ namespace dotenv {
                         size_t end = value.find("}", pos + 2);
 
                         if (end != std::string::npos) {
-
                             std::string key_with_default = value.substr(pos + 2, end - pos - 2);
                             size_t colon_pos = key_with_default.find(":");
                             std::string key, default_value;
@@ -150,13 +152,12 @@ namespace dotenv {
     void load(const std::string& path) {
         std::ifstream file(path);
         if (file.is_open()) {
-
             std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
             std::unordered_map<std::string, std::string> map = parse(contents);
 
             for (const auto& pair : map) {
 
-                std::string key   = pair.first;
+                std::string key = pair.first;
                 std::string value = pair.second;
 
                 if (value.empty()) {
