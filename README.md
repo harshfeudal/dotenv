@@ -4,14 +4,13 @@
 
 <div align="center">
 
-This library support to load environment variables from a `.env` file and read them like what `.json` does but more simple!
+This library support loading environment variables from a `.env` file and reading them like what `.json` does but more simply!
 
 [![Build status](https://ci.appveyor.com/api/projects/status/0yh7hmtp0xu98b31?svg=true)](https://ci.appveyor.com/project/harshfeudal/dotenv)
 [![Release](https://img.shields.io/github/v/release/harshfeudal/dotenv?color=brightgreen)](https://github.com/harshfeudal/dotenv/releases/latest)
 [![GitHub issues](https://img.shields.io/github/issues/harshfeudal/dotenv)](https://github.com/harshfeudal/dotenv/issues)
 [![GitHub license](https://img.shields.io/github/license/harshfeudal/dotenv?color=brightgreen)](https://github.com/harshfeudal/dotenv/blob/master/MIT_LICENSE.md)
 <br />
-[![Discord](https://img.shields.io/discord/900408551573438584?style=flat&logo=discord)](https://discord.gg/6Faaqhaqjs)
 [![GitHub stars](https://img.shields.io/github/stars/harshfeudal/dotenv?color=ff69b4)](https://github.com/harshfeudal/dotenv/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/harshfeudal/dotenv?color=ff69b4)](https://github.com/harshfeudal/dotenv/network)
 
@@ -19,7 +18,7 @@ This library support to load environment variables from a `.env` file and read t
 
 ### 📝 About this repository
 - This project is owned by [@harshfeudal](https://github.com/harshfeudal). You can join my Discord server [here](https://discord.gg/BAk2CXpRAT)!
-- This library can be used for many different projects, currently, this library is enough to make a C++ Discord bot using [D++](https://dpp.dev/) for safety token reader (you can use `.gitignore` to ignore `.env` file).
+- This library can be used for many different projects, currently, this library is enough to make a C++ Discord bot using [D++](https://dpp.dev/) for a safety token reader (you can use `.gitignore` to ignore `.env` file).
 
 ### 🚨 Usage
 1. Download ONLY `dotenv` folder (make sure that it contains `dotenv.h` inside). Simple right?
@@ -77,14 +76,14 @@ MY_VAR="Hello World!"
 Done! Simple right (I think)?
 
 ### ✨ Library features
-1. Somehow you really want to skip line (or do whatever you want) like this:
+1. Somehow you really want to skip a line (or do whatever you want) like this:
 ```console
 The sentence is:
 "Hello World"
     - Hello 2023 -
 ```
 
-... so, with this library feature, to do this, you can just do like this in your `.env` file:
+... so, with this library feature, to do this, you can just do this in your `.env` file:
 ```env
 SENTENCE="\n\"Hello World\"\n\t- Hello 2023 -"
 ```
@@ -96,11 +95,11 @@ and it will work as expected!
 TOKEN="WW91ckRpc2NvcmRCb3RUb2tlbg=="    # Your Discord bot token
 ```
 
-With this library features, your comment will be ignored after the `#` mark! Comments begin where a `#` exists, so if your value contains a `#` please wrap it in quotes.
+With this library feature, your comment will be ignored after the `#` mark! Comments begin where a `#` exists, so if your value contains a `#` please wrap it in quotes.
 
-3. This library just include __only a header file (`dotenv.h`)__!
+3. This library just includes __only a header file (`dotenv.h`)__!
 
-4. Very similar with what Javascript does; The expansion engine roughly has the following rules:
+4. Very similar to what Javascript does; The expansion engine roughly has the following rules:
 
     - `$KEY` will expand any env with the name `KEY`
     - `${KEY}` will expand any env with the name `KEY`
@@ -127,7 +126,7 @@ EMPTY= # A space after the '=' symbol
  - You can probably help me develop this project too by DMing me on my [Discord profile](https://discord.com/users/622450109317251088).
 
 ### 💎 Contribution and Pull Request
-  I'd probably glad to see if you have anything new to help and support me. To do that, please make one and before you do that, just make sure you've tested the code. I won't bite you if you do it wrong, but just make sure that you have to test it clearly before I merge it.
+  I'd probably be glad to see if you have anything new to help and support me. To do that, please make one and before you do that, just make sure you've tested the code. I won't bite you if you do it wrong, but just make sure that you have to test it clearly before I merge it.
 
 ### 📚 Download
 You can download the latest version [here](https://github.com/harshfeudal/dotenv/releases/latest).
