@@ -1,0 +1,28 @@
+name: CMake
+
+on: [ push, pull_request ]
+
+jobs:
+  windows-build:
+    strategy:
+      matrix:
+        os: [ windows-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: setup msbuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Generate CMake and build
+        run: |
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 17 2022" -A x64 ..
+          cmake --build . --config Release
+
+      - name: Run test
+        run: cd build && ./Release/Dotenv
