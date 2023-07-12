@@ -25,4 +25,4 @@ jobs:
       - name: Build
         run: |
           premake5 vs2022
-          msbuild /m "Anilab.sln" /p:configuration="release"
+          msbuild /m "Dotenv.sln" /p:configuration="release"
