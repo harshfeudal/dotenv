@@ -4,7 +4,7 @@
 
 | Name                   | Version      | Supported          |
 | ---------------------- | ------------ | ------------------ |
-| dotenv.h               | 1.2.0        | [x]                |
+| dotenv.h               | 1.2.0        | Yes                |
 
 ## Reporting a Vulnerability
 
