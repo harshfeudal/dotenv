@@ -133,6 +133,6 @@ You can download the latest version [here](https://github.com/harshfeudal/dotenv
 
 <div align="center">
     <span>
-            - © 2023 Harshfeudal. All rights reserved. -
+            - © 2024 Harshfeudal. All rights reserved. -
     </span>
 </div>
