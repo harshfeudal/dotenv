@@ -1,75 +1,76 @@
+#include <dotenv/dotenv.h>
 #include "test.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+#define green "\033[32m"
+#define red "\033[31m"
+#define reset "\033[0m"
+
+struct failed_test {
+    std::string key;
+    std::string actual;
+    std::string expected;
+};
+
+void pass(const std::string& actual, const std::string& expected, bool& passed) {
+    passed = (actual == expected);
+}
 
 int main() {
-    dotenv::load("./test/.env");
+    Dotenv env;
+    if (!env.load(".env")) {
+        std::cerr << "Failed to load .env file" << std::endl;
+        return 1;
+    }
 
-    // Original
-    run_test("BASIC");
-    run_test("AFTER_LINE");
-    run_test("EMPTY");
-    run_test("EMPTY_WITH_SPACE");
-    run_test("EMPTY_SINGLE_QUOTES");
-    run_test("EMPTY_DOUBLE_QUOTES");
-    run_test("EMPTY_BACKTICKS");
-    run_test("SINGLE_QUOTES");
-    run_test("SINGLE_QUOTES_SPACED");
-    run_test("DOUBLE_QUOTES");
-    run_test("DOUBLE_QUOTES_SPACED");
-    run_test("DOUBLE_QUOTES_INSIDE_SINGLE");
-    run_test("DOUBLE_QUOTES_WITH_NO_SPACE_BRACKET");
-    run_test("SINGLE_QUOTES_INSIDE_DOUBLE");
-    run_test("BACKTICKS_INSIDE_SINGLE");
-    run_test("BACKTICKS_INSIDE_DOUBLE");
-    run_test("BACKTICKS");
-    run_test("BACKTICKS_SPACED");
-    run_test("DOUBLE_QUOTES_INSIDE_BACKTICKS");
-    run_test("SINGLE_QUOTES_INSIDE_BACKTICKS");
-    run_test("DOUBLE_AND_SINGLE_QUOTES_INSIDE_BACKTICKS");
-    run_test("EXPAND_NEWLINES");
-    run_test("DONT_EXPAND_UNQUOTED");
-    run_test("DONT_EXPAND_SQUOTED");
-    run_test("DONT_EXPAND_SQUOTED");
-    run_test("INLINE_COMMENTS");
-    run_test("INLINE_COMMENTS_SINGLE_QUOTES");
-    run_test("INLINE_COMMENTS_DOUBLE_QUOTES");
-    run_test("INLINE_COMMENTS_BACKTICKS");
-    run_test("INLINE_COMMENTS_SPACE");
-    run_test("EQUAL_SIGNS");
-    run_test("RETAIN_INNER_QUOTES");
-    run_test("RETAIN_INNER_QUOTES_AS_STRING");
-    run_test("RETAIN_INNER_QUOTES_AS_BACKTICKS");
-    run_test("TRIM_SPACE_FROM_UNQUOTED");
-    run_test("USERNAME");
-    run_test("SPACED_KEY");
+    std::ofstream out_file("output.txt");
+    if (!out_file.is_open()) {
+        std::cerr << "Failed to open output.txt" << std::endl;
+        return 1;
+    }
 
-    // Expansion
-    run_test("BASIC_EXPAND");
-    run_test("MACHINE");
-    run_test("MACHINE_EXPAND");
-    run_test("UNDEFINED_EXPAND");
-    run_test("ESCAPED_EXPAND");
-    run_test("DEFINED_EXPAND_WITH_DEFAULT");
-    run_test("DEFINED_EXPAND_WITH_DEFAULT_NESTED");
-    run_test("UNDEFINED_EXPAND_WITH_DEFINED_NESTED");
-    run_test("UNDEFINED_EXPAND_WITH_DEFAULT");
-    run_test("UNDEFINED_EXPAND_WITH_DEFAULT_NESTED");
-    run_test("DEFINED_EXPAND_WITH_DEFAULT_NESTED_TWICE");
-    run_test("UNDEFINED_EXPAND_WITH_DEFAULT_NESTED_TWICE");
-    run_test("DEFINED_EXPAND_WITH_DEFAULT_WITH_SPECIAL_CHARACTERS");
-    run_test("UNDEFINED_EXPAND_WITH_DEFAULT_WITH_SPECIAL_CHARACTERS");
-    run_test("UNDEFINED_EXPAND_WITH_DEFAULT_WITH_SPECIAL_CHARACTERS_NESTED");
-    run_test("MONGOLAB_DATABASE");
-    run_test("MONGOLAB_USER");
-    run_test("MONGOLAB_PASSWORD");
-    run_test("MONGOLAB_DOMAIN");
-    run_test("MONGOLAB_PORT");
-    run_test("MONGOLAB_URI");
-    run_test("MONGOLAB_USER_RECURSIVELY");
-    run_test("MONGOLAB_URI_RECURSIVELY");
-    run_test("WITHOUT_CURLY_BRACES_URI");
-    run_test("WITHOUT_CURLY_BRACES_USER_RECURSIVELY");
-    run_test("WITHOUT_CURLY_BRACES_URI_RECURSIVELY");
-    run_test("WITHOUT_CURLY_BRACES_UNDEFINED_EXPAND_WITH_DEFAULT_WITH_SPECIAL_CHARACTERS");
+    std::streambuf* cout_buf = std::cout.rdbuf();
+    std::cout.rdbuf(out_file.rdbuf());
 
-    return 0;
+    auto categories = get_test_categories();
+    int total_tests = 0;
+    int passed_tests = 0;
+    std::vector<failed_test> failed_tests;
+
+    for (const auto& category : categories) {
+        std::cout << category.name << ":\n";
+        for (const auto& test_case : category.cases) {
+            std::string actual = env.get(test_case.key);
+            bool passed = false;
+            pass(actual, test_case.expected, passed);
+            if (passed) {
+                passed_tests++;
+            } else {
+                failed_tests.push_back({test_case.key, actual, test_case.expected});
+            }
+            total_tests++;
+            std::cout << "  " << test_case.key << ": " << actual << "\n";
+        }
+        std::cout << "\n";
+    }
+
+    std::cout.rdbuf(cout_buf);
+
+    if (!failed_tests.empty()) {
+        std::cout << red << "Failed Tests:\n" << reset;
+        for (const auto& failed : failed_tests) {
+            std::cout << "  Key: " << failed.key << "\n";
+            std::cout << "    Actual: \"" << failed.actual << "\"\n";
+            std::cout << "    Expected: \"" << failed.expected << "\"\n";
+        }
+        std::cout << "\n";
+    }
+
+    std::cout << green << "Passed: [" << passed_tests << "/" << total_tests << "]" << reset << std::endl;
+
+    out_file.close();
+    return (passed_tests == total_tests) ? 0 : 1;
 }

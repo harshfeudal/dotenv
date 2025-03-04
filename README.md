@@ -4,7 +4,7 @@
 
 <div align="center">
 
-This library support loading environment variables from a `.env` file and reading them like what `.json` does but more simply!
+A lightweight C++ library for loading and parsing environment variables from a `.env` file with JavaScript-like variable expansion.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/0yh7hmtp0xu98b31?svg=true)](https://ci.appveyor.com/project/harshfeudal/dotenv)
 [![Release](https://img.shields.io/github/v/release/harshfeudal/dotenv?color=brightgreen)](https://github.com/harshfeudal/dotenv/releases/latest)
@@ -17,12 +17,12 @@ This library support loading environment variables from a `.env` file and readin
 </div>
 
 ### 📝 About this repository
-- This project is owned by [@harshfeudal](https://github.com/harshfeudal). You can join my Discord server [here](https://discord.gg/BAk2CXpRAT)!
-- This library can be used for many different projects, currently, this library is enough to make a C++ Discord bot using [D++](https://dpp.dev/) for a safety token reader (you can use `.gitignore` to ignore `.env` file).
+- This project is owned by [@harshfeudal](https://github.com/harshfeudal).
+- A header-only C++ library perfect for managing configuration variables, such as tokens for a Discord bot using [D++](https://dpp.dev/). Use with `.gitignore` to keep your `.env` file secure.
 
 ### 🚨 Usage
-1. Download ONLY `dotenv` folder (make sure that it contains `dotenv.h` inside). Simple right?
-2. Include it in your project like this:
+1. Download the `dotenv` folder containing `dotenv.h`.
+2. Include and use it in your project like this:
 
 `main.cpp`
 ```cpp
@@ -30,109 +30,82 @@ This library support loading environment variables from a `.env` file and readin
 #include <iostream>
 
 int main() {
+    Dotenv env;
+    
     // Load your .env file
-	dotenv::load(".env");
+    if (!env.load(".env")) {
+        std::cerr << "Failed to load .env file" << std::endl;
+        return 1;
+    }
 
     // Read your .env variable
-    char* my_var;
-    size_t envValueSize;
-    _dupenv_s(&my_var, &envValueSize, "MY_VAR");
-
-    // Read it
+    std::string my_var = env.get("MY_VAR");
     std::cout << "The variable is: " << my_var << std::endl;
 
-    // Remember to free it
-    free(my_var);
+    // Get with default value
+    std::string missing_var = env.get("MISSING", "default value");
+    std::cout << "Missing variable: " << missing_var << std::endl;
+
+    return 0;
 }
 ```
-
-* Some notice update: You can also use `std::getenv("YOUR_ENV_VAR")`.
-However, some compiler like MSVC doesn't allow you to use that, and they recommend you to replace as `_dupenv_s`.
-You can also use other methods if you find a new one! If you are not using MSVC, you can do like below (recommend):
-
-```cpp
-#include <dotenv/dotenv.h>
-#include <iostream>
-int main() {
-    // Load your .env file
-	dotenv::load(".env");
-
-    // Read your .env variable
-    const char* my_var = std::getenv("MY_VAR");
-
-    // Read it
-    std::cout << "The variable is: " << my_var << std::endl;
-}
-```
-
-... and compare it to your `.env` file:
-
-`.env`
-
-```env
-MY_VAR="Hello World!"
-```
-
-Done! Simple right (I think)?
 
 ### ✨ Library features
-1. Somehow you really want to skip a line (or do whatever you want) like this:
+1. **Formatted Strings:** Supports escape sequences in double-quoted values:
+
+```env
+SENTENCE="\n\"Hello World\"\n\t- Hello 2025 -"
+```
+
+Outputs:
+
 ```console
 The sentence is:
 "Hello World"
-    - Hello 2023 -
+    - Hello 2025 -
 ```
 
-... so, with this library feature, to do this, you can just do this in your `.env` file:
-```env
-SENTENCE="\n\"Hello World\"\n\t- Hello 2023 -"
-```
+2. **Comments:** Ignores content after `#` when not in quotes:
 
-and it will work as expected!
-
-2. Or, you really want to make a comment like this:
 ```env
 TOKEN="WW91ckRpc2NvcmRCb3RUb2tlbg=="    # Your Discord bot token
 ```
 
-With this library feature, your comment will be ignored after the `#` mark! Comments begin where a `#` exists, so if your value contains a `#` please wrap it in quotes.
+3. **Header-Only:** Just include `dotenv.h` - no additional linking required!
 
-3. This library just includes __only a header file (`dotenv.h`)__!
+4. **Variable Expansion:** JavaScript-like variable substitution:
+- `$KEY` or `${KEY}` expands to the value of KEY
+- `\$KEY` escapes the expansion
+- `${KEY:-default}` uses "default" if KEY is unset
 
-4. Very similar to what Javascript does; The expansion engine roughly has the following rules:
+Example:
 
-    - `$KEY` will expand any env with the name `KEY`
-    - `${KEY}` will expand any env with the name `KEY`
-    - `\$KEY` will escape the `$KEY` rather than expand
-    - `${KEY:-default}` will first attempt to expand any env with the name `KEY`. If not one, then it will return default
-
-5. If you decide to make an empty variable like this:
 ```env
-EMPTY=
+HOST=localhost
+URL=$HOST:8080
+SAFE=\$HOST
+FALLBACK=${UNSET:-default}
 ```
 
-... so remember to have a space like this:
-```env
-EMPTY= # A space after the '=' symbol
-```
+5. **Quote Support:** Supports single (`'`), double (`"`), and backtick (`` ` ``) quotes. Only double-quoted values process escapes.
 
-### 👷 Support platform
- - Microsoft Windows 10 `x64/x86`
- - Visual Studio platform `x64/x86`
- - C++ 17 `ISO/IEC 14882`
+6. **Empty Values:** Handles empty variables:
 
-### 🤝 Support me
- - Please leave me a star if you like it. Thank you very much!
- - You can probably help me develop this project too by DMing me on my [Discord profile](https://discord.com/users/622450109317251088).
+### 👷 Support Platform
+- Microsoft Windows 10/11 `x64/x86`
+- Visual Studio platform `x64/x86`
+- C++17 ISO/IEC `14882`
 
 ### 💎 Contribution and Pull Request
-  I'd probably be glad to see if you have anything new to help and support me. To do that, please make one and before you do that, just make sure you've tested the code. I won't bite you if you do it wrong, but just make sure that you have to test it clearly before I merge it.
+Contributions are welcome! Please:
+
+- Test your changes thoroughly
+- Submit a pull request
+
+Don't worry about mistakes - we'll work together to refine it
 
 ### 📚 Download
-You can download the latest version [here](https://github.com/harshfeudal/dotenv/releases/latest).
+Get the latest version [here](https://github.com/harshfeudal/dotenv/releases/latest).
 
-<div align="center">
-    <span>
-            - © 2024 Harshfeudal. All rights reserved. -
-    </span>
-</div>
+### 🤝 Support me
+Please leave a star if you like it. Thank you!
