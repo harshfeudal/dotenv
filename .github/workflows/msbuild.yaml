@@ -1,12 +1,12 @@
-name: Premake
+name: Premake Build
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 
 jobs:
   windows-build:
     strategy:
       matrix:
-        os: [ windows-latest ]
+        os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -14,15 +14,52 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      - name: setup msbuild
+      - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.1
 
-      - name: Premake setup
+      - name: Premake Setup
         uses: abel0b/setup-premake@v2.2
         with:
           version: "5.0.0-beta2"
 
-      - name: Build
+      - name: Generate Solution with Premake
         run: |
           premake5 vs2022
-          msbuild /m "Dotenv.sln" /p:configuration="release"
+
+      - name: Build Solution
+        run: |
+          msbuild /m "dotenv.sln" /p:Configuration=Release /p:Platform=x64
+        working-directory: .
+
+      - name: Copy .env to Output Directory
+        run: |
+          copy .env x64\Release\
+        shell: cmd
+        continue-on-error: true
+
+      - name: Run Dotenv_oop Tests
+        run: |
+          cd x64\Release
+          Dotenv_oop.exe
+        shell: cmd
+        continue-on-error: true
+
+      - name: Upload Dotenv_oop Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: Dotenv_oop-output
+          path: x64/Release/output_oop.txt
+
+      - name: Run Dotenv_alt Tests
+        run: |
+          cd x64\Release
+          Dotenv_alt.exe
+        shell: cmd
+        continue-on-error: true
+
+      - name: Upload Dotenv_alt Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: Dotenv_alt-output
+          path: x64/Release/output_alt.txt
+          
