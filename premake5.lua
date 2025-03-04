@@ -16,11 +16,11 @@ project "Dotenv_oop"
     targetdir ("%{wks.location}/x64/%{cfg.buildcfg}")
     objdir    ("%{wks.location}/x64/%{cfg.buildcfg}")
 
-    includedirs { "%{wks.location}" }
+    includedirs{ "$(SolutionDir)include" }
     files { 
-        "dotenv.h",                   
-        "test.h",                    
-        "test_oop.cpp"                
+        "dotenv/dotenv.h",                   
+        "test/test.h",                    
+        "test/test_oop.cpp"                
     }
 
     filter { "system:windows", "toolset:msc" }
@@ -41,11 +41,11 @@ project "Dotenv_alt"
     targetdir ("%{wks.location}/x64/%{cfg.buildcfg}")
     objdir    ("%{wks.location}/x64/%{cfg.buildcfg}")
 
-    includedirs { "%{wks.location}" }
+    includedirs{ "$(SolutionDir)include" }
     files { 
-        "dotenv-alt.h",               
-        "test.h",                    
-        "test_alt.cpp"                
+        "dotenv/dotenv-alt.h",               
+        "test/test.h",                    
+        "test/test_alt.cpp"                
     }
 
     filter { "system:windows", "toolset:msc" }

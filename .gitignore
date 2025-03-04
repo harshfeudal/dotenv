@@ -416,3 +416,5 @@ x64/
 lib/**.cmake
 .vscode/
 build
+output_oop.txt
+output_alt.txt
