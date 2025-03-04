@@ -5,7 +5,6 @@ workspace "dotenv"
     configurations { "Release" }
     startproject "Dotenv_oop"
 
--- Project for OOP version (dotenv.h)
 project "Dotenv_oop"
     kind          "ConsoleApp"
     language      "C++"
@@ -31,7 +30,6 @@ project "Dotenv_oop"
         runtime  "Release"
         optimize "on"
 
--- Project for non-OOP version (dotenv-alt.h)
 project "Dotenv_alt"
     kind          "ConsoleApp"
     language      "C++"

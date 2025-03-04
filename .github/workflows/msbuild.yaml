@@ -45,7 +45,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Dotenv_oop Output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Dotenv_oop-output
           path: x64/Release/output_oop.txt
@@ -58,8 +58,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Dotenv_alt Output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Dotenv_alt-output
           path: x64/Release/output_alt.txt
-          
