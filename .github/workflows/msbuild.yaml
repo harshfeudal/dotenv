@@ -1,4 +1,4 @@
-name: MSBuild
+name: Premake
 
 on: [ push, pull_request ]
 
