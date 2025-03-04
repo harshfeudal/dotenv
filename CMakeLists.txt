@@ -39,5 +39,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Copy .env file
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    ${CMAKE_SOURCE_DIR}/test/.env $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    ${CMAKE_SOURCE_DIR}/.env $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
