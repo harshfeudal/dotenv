@@ -1,0 +1,28 @@
+name: MSBuild
+
+on: [ push, pull_request ]
+
+jobs:
+  windows-build:
+    strategy:
+      matrix:
+        os: [ windows-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: setup msbuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Premake setup
+        uses: abel0b/setup-premake@v2.2
+        with:
+          version: "5.0.0-beta2"
+
+      - name: Build
+        run: |
+          premake5 vs2022
+          msbuild /m "Dotenv.sln" /p:configuration="release"
