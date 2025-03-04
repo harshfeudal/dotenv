@@ -242,23 +242,47 @@ namespace dotenv {
         }
     }
 
-    bool load(const std::string& filepath) {
-        env_map.clear(); // Clear previous data
+    /**
+     * @brief Loads environment variables from a specified .env file into a static global map.
+     * 
+     * This function reads key-value pairs from the given file and stores them in the static env_map.
+     * If the clear parameter is true, it clears all existing key-value pairs before loading; if false,
+     * it merges new pairs with existing ones, overwriting values for duplicate keys. Returns false if
+     * the file cannot be opened.
+     * 
+     * @param filepath Path to the .env file to load (e.g., ".env").
+     * @param clear If true, clears the existing env_map before loading; if false, appends to it (defaults to `true`).
+     * @return bool True if the file was successfully opened and read, false otherwise.
+     */
+    bool load(const std::string& filepath, bool clear = true) {
+        if (clear) {
+            env_map.clear();
+        }
         std::ifstream file(filepath);
         if (!file.is_open()) {
             return false;
         }
-
+    
         std::ios_base::sync_with_stdio(false);
         std::string line;
         line.reserve(256);
         while (std::getline(file, line)) {
             parse_line(line);
         }
-
+    
         return true;
     }
 
+    /**
+     * @brief Retrieves the value associated with a given key from the loaded environment variables.
+     * 
+     * If the key exists in the static env_map, its value is returned. Otherwise, a default value is
+     * returned. This function accesses the global state set by the most recent load() call.
+     * 
+     * @param key The key to look up in the environment map.
+     * @param default_value Value to return if the key is not found (defaults to an empty string).
+     * @return std::string The value associated with the key, or the default_value if not found.
+     */
     std::string get(const std::string& key, const std::string& default_value = "") {
         auto it = env_map.find(key);
         return (it != env_map.end()) ? it->second : default_value;

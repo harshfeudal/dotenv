@@ -22,7 +22,7 @@ void pass(const std::string& actual, const std::string& expected, bool& passed) 
 }
 
 int main() {
-    Dotenv env;  // Instantiate the class
+    Dotenv env;
     if (!env.load(".env")) {
         std::cerr << "Failed to load .env file" << std::endl;
         return 1;
@@ -45,7 +45,7 @@ int main() {
     for (const auto& category : categories) {
         std::cout << category.name << ":\n";
         for (const auto& test_case : category.cases) {
-            std::string actual = env.get(test_case.key);  // Use class method
+            std::string actual = env.get(test_case.key);
             bool passed = false;
             pass(actual, test_case.expected, passed);
             if (passed) {

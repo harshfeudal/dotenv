@@ -11,6 +11,16 @@ class Dotenv {
 public:
     Dotenv() = default;
 
+    /**
+     * @brief Loads environment variables from a specified .env file into the object's internal map.
+     * 
+     * This function reads key-value pairs from the given file and stores them in the object's env_map.
+     * If the file cannot be opened, it returns false. Multiple calls merge the contents, with later calls
+     * overwriting values for duplicate keys from previous calls.
+     * 
+     * @param filepath Path to the .env file to load (e.g., ".env").
+     * @return bool True if the file was successfully opened and read, false otherwise.
+     */
     bool load(const std::string& filepath) {
         std::ifstream file(filepath);
         if (!file.is_open()) {
@@ -27,6 +37,16 @@ public:
         return true;
     }
 
+    /**
+     * @brief Retrieves the value associated with a given key from the loaded environment variables.
+     * 
+     * If the key exists in the env_map, its value is returned. Otherwise, a default value is returned.
+     * This function does not modify the internal state and can be called multiple times after loading.
+     * 
+     * @param key The key to look up in the environment map.
+     * @param default_value Value to return if the key is not found (defaults to an empty string).
+     * @return std::string The value associated with the key, or the default_value if not found.
+     */
     std::string get(const std::string& key, const std::string& default_value = "") const {
         auto it = env_map.find(key);
         return (it != env_map.end()) ? it->second : default_value;
