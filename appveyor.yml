@@ -31,5 +31,7 @@ test_script:
 
       cd Release
 
-      Dotenv.exe
+      Dotenv_alt.exe
+
+      Dotenv_oop.exe
       

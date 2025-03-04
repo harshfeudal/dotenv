@@ -1,4 +1,4 @@
-#include <dotenv/dotenv.h>
+#include <dotenv/dotenv-alt.h>
 
 #include "test.h"
 
@@ -22,15 +22,14 @@ void pass(const std::string& actual, const std::string& expected, bool& passed) 
 }
 
 int main() {
-    Dotenv env;
-    if (!env.load(".env")) {
+    if (!dotenv::load(".env")) {
         std::cerr << "Failed to load .env file" << std::endl;
         return 1;
     }
 
-    std::ofstream out_file("output.txt");
+    std::ofstream out_file("output_alt.txt");
     if (!out_file.is_open()) {
-        std::cerr << "Failed to open output.txt" << std::endl;
+        std::cerr << "Failed to open output_alt.txt" << std::endl;
         return 1;
     }
 
@@ -45,7 +44,7 @@ int main() {
     for (const auto& category : categories) {
         std::cout << category.name << ":\n";
         for (const auto& test_case : category.cases) {
-            std::string actual = env.get(test_case.key);
+            std::string actual = dotenv::get(test_case.key);
             bool passed = false;
             pass(actual, test_case.expected, passed);
             if (passed) {
@@ -62,7 +61,7 @@ int main() {
     std::cout.rdbuf(cout_buf);
 
     if (!failed_tests.empty()) {
-        std::cout << red << "Failed Tests:\n" << reset;
+        std::cout << red << "Failed Tests (Non-OOP):\n" << reset;
         for (const auto& failed : failed_tests) {
             std::cout << "  Key: " << failed.key << "\n";
             std::cout << "    Actual: \"" << failed.actual << "\"\n";
@@ -71,7 +70,7 @@ int main() {
         std::cout << "\n";
     }
 
-    std::cout << green << "Passed: [" << passed_tests << "/" << total_tests << "]" << reset << std::endl;
+    std::cout << green << "Passed (Non-OOP): [" << passed_tests << "/" << total_tests << "]" << reset << std::endl;
 
     out_file.close();
     return (passed_tests == total_tests) ? 0 : 1;

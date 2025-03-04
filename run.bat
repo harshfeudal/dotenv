@@ -22,7 +22,8 @@ if %errorlevel% equ 0 (
     echo %ESC%[1;32mBuild succeeded. Opening Dotenv.exe ...%ESC%[0m
     cls
     cd Release
-    Dotenv.exe
+    Dotenv_alt.exe
+    Dotenv_oop.exe
 ) else (
     echo %ESC%[1;31mBuild failed!%ESC%[0m
 )

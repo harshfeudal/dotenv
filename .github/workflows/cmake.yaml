@@ -28,4 +28,5 @@ jobs:
         run: |
           cd build/Release
           dir
-          .\Dotenv.exe
+          .\Dotenv_alt.exe
+          .\Dotenv_oop.exe
