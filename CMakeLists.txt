@@ -1,5 +1,5 @@
 # 
-# Copyright 2024 harshfeudal
+# Copyright 2025 harshfeudal
 # 
 # Licensed under MIT License.
 #
@@ -30,14 +30,19 @@ add_executable(${PROJECT_NAME} ${mainsrc})
 
 target_include_directories(${PROJECT_NAME} PRIVATE "include")
 
-# Set properties for the target
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
 # Copy .env file
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    ${CMAKE_SOURCE_DIR}/.env $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
+# Verify .env exists before copying
+if(EXISTS "${CMAKE_SOURCE_DIR}/.env")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/.env" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/.env"
+        COMMENT "Copying .env file to output directory"
+    )
+else()
+    message(WARNING ".env file not found in source directory")
+endif()
