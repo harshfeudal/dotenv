@@ -46,6 +46,8 @@ void pass(const std::string& actual, const std::string& expected, bool& passed) 
 }
 
 int main() {
+    std::cout << "Testing [dotenv-alt.h] version: " << DOTENV_ALT_VERSION << std::endl;
+    
     if (!dotenv::load(".env")) {
         std::cerr << "Failed to load .env file" << std::endl;
         return 1;

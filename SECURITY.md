@@ -2,11 +2,13 @@
 
 ## Supported Versions
 
-| Name           | Version        | Supported           |
-| -------------- | -------------- | ------------------- |
-| `dotenv.h`     | 2.0.0          | Yes                 |
-| `dotenv-alt.h` | 2.0.0          | Yes                 |
-| `dotenv.h`     | 1.2.1 or below | No longer supported |
+| Name           | Version          | Supported |
+| :------------- | :--------------- | :-------: |
+| `dotenv.h`     | `2.0.1`          | &check;   |
+| `dotenv-alt.h` | `2.0.1`          | &check;   |
+| `dotenv.h`     | `2.0.0`          | &cross;   |
+| `dotenv-alt.h` | `2.0.0`          | &cross;   |
+| `dotenv.h`     | `1.2.1` or below | &cross;   |
 
 ## Reporting a Vulnerability
 

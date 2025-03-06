@@ -1,6 +1,8 @@
 #ifndef DOTENV_ALT_H
 #define DOTENV_ALT_H
 
+#define DOTENV_ALT_VERSION "2.0.1"
+
 /**
  * The MIT License (MIT)
  * Copyright (c) 2025 harshfeudal
