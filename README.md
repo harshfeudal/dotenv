@@ -50,6 +50,8 @@ int main() {
 }
 ```
 
+**Note:** If you would like to use the non-OOP version, please include only `dotenv-alt.h`. It provides a set of functions instead of a class-based interface. This can be useful for simpler use cases or when you prefer a procedural approach.
+
 ### ✨ Library features
 1. **Formatted Strings:** Supports escape sequences in double-quoted values:
 
